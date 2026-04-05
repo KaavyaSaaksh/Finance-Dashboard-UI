@@ -8,7 +8,7 @@ This project demonstrates strong fundamentals in **frontend architecture, UI/UX 
 
 ---
 
-* 🚀 **Live Demo:** https://your-project.vercel.app
+* 🚀 **Live Demo:** [https://your-project.vercel.app](https://finance-dashboard-ui-pi-swart.vercel.app/)
 
 ---
 
