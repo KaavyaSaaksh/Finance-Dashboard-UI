@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-800 antialiased transition-colors duration-300;
+    font-family: 'Inter', system-ui, sans-serif;
+
+    /* 🌞 LIGHT MODE - soft classic gradient */
+    background: radial-gradient(circle at 20% 20%, #eef2ff, transparent 40%),
+                radial-gradient(circle at 80% 0%, #fef3c7, transparent 40%),
+                #f8fafc;
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    @apply text-gray-200;
+
+    /* 🌙 DARK MODE - premium deep gradient */
+    background: radial-gradient(circle at 20% 20%, rgba(99,102,241,0.15), transparent 40%),
+                radial-gradient(circle at 80% 0%, rgba(16,185,129,0.1), transparent 40%),
+                #0b0f19;
+    background-attachment: fixed;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4 {
+    @apply text-gray-900 dark:text-white;
+  }
+}
+
+/* 🔥 GLASS CARD */
+.glass-card {
+  @apply rounded-2xl shadow-md transition-all duration-300;
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.dark .glass-card {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ✨ Hover effect */
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(99,102,241,0.15);
+}
+
+/* 🎬 Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* 📊 Table text */
+.dark td {
+  @apply text-gray-300;
+}
+
+.dark th {
+  @apply text-gray-400;
+}
+
+/* ✍️ Placeholder */
+::placeholder {
+  @apply text-gray-500;
+}
