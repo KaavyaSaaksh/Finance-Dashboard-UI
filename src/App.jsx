@@ -498,9 +498,9 @@ function App() {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-              <div className="glass-card p-4 sm:p-6 lg:p-8">  
+              <div className="glass-card p-8">
                 <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">Cash Flow Trends</h3>
-                <ResponsiveContainer width="100%" height={window.innerWidth < 640 ? 250 : 320}>
+                <ResponsiveContainer width="100%" height={250}>
                   <AreaChart data={lineData}>
                     <defs>
                       <linearGradient id="colorAmt" x1="0" y1="0" x2="0" y2="1">
@@ -517,9 +517,9 @@ function App() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="glass-card p-4 sm:p-6 lg:p-8">
+              <div className="glass-card p-8">
                 <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">Expense Allocation</h3>
-                <ResponsiveContainer width="100%" height={window.innerWidth < 640 ? 250 : 320}>
+                <ResponsiveContainer width="100%" height={320}>
                   <PieChart margin={{ top: 20, bottom: 20 }}>
                     <Pie
                       data={pieData}
@@ -529,13 +529,14 @@ function App() {
                       dataKey="value"
                       nameKey="category"
                       labelLine={false}
-                      label={false}
+                      label={({ category, percent }) =>
+                        `${category} ${percent}%`
+                      }
                     >
                       {pieData.map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Legend layout="horizontal" verticalAlign="bottom" />
 
                     <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
                   </PieChart>
@@ -544,11 +545,11 @@ function App() {
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
 
-              <div className="glass-card p-4 sm:p-6 lg:p-8">
+              <div className="glass-card p-8">
                 <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">
                   Income vs Expense
                 </h3>
-                <ResponsiveContainer width="100%" height={window.innerWidth < 640 ? 250 : 320}>
+                <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={monthlyData}>
                     <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#333" : "#eee"} />
                     <XAxis dataKey="month" />
@@ -560,11 +561,11 @@ function App() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="glass-card p-4 sm:p-6 lg:p-8">
+              <div className="glass-card p-8">
                 <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">
                   Monthly Savings Trend
                 </h3>
-               <ResponsiveContainer width="100%" height={window.innerWidth < 640 ? 250 : 320}>
+                <ResponsiveContainer width="100%" height={250}>
                   <LineChart data={monthlyData}>
                     <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#333" : "#eee"} />
                     <XAxis dataKey="month" />
@@ -581,7 +582,7 @@ function App() {
         {/* Transactions section where user can view, filter and manage entries */}
         {activeTab === "transactions" && (
           <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex flex-col gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <input placeholder="Search category..." value={search} onChange={(e) => setSearch(e.target.value)} className="glass-card px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white" />
               <select onChange={(e) => setFilterType(e.target.value)} className="glass-card px-4 py-3 outline-none dark:bg-gray-900 dark:text-white">
                 <option value="all">All Types</option>
@@ -630,10 +631,10 @@ function App() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="bg-gray-50 dark:bg-gray-800/30 text-gray-400 text-[11px] uppercase tracking-widest font-bold">
-                      <th className="px-3 py-3 sm:px-6 sm:py-4">Category</th>
-                      <th className="px-3 py-3 sm:px-6 sm:py-4">Date</th>
-                      <th className="px-3 py-3 sm:px-6 sm:py-4 text-right">Amount</th>
-                      {role === "admin" && <th className="px-3 py-3 sm:px-6 sm:py-4 text-center">Actions</th>}
+                      <th className="px-6 py-4">Category</th>
+                      <th className="px-6 py-4">Date</th>
+                      <th className="px-6 py-4 text-right">Amount</th>
+                      {role === "admin" && <th className="px-6 py-4 text-center">Actions</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -649,18 +650,18 @@ function App() {
                     ) : (
                       filtered.map(t => (
                         <tr key={t.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group">
-                          <td className="px-3 py-3 sm:px-6 sm:py-4">
+                          <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <div className={`w-2 h-2 rounded-full ${t.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
                               <span className="font-semibold text-gray-700 dark:text-gray-200">{t.category}</span>
                             </div>
                           </td>
 
-                          <td className="px-3 py-3 sm:px-6 sm:py-4 text-gray-500 dark:text-gray-400 text-sm">
+                          <td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
                             {t.date}
                           </td>
 
-                          <td className={`px-3 py-3 sm:px-6 sm:py-4 text-right font-bold ${t.type === 'income'
+                          <td className={`px-6 py-4 text-right font-bold ${t.type === 'income'
                             ? 'text-emerald-600'
                             : 'text-gray-900 dark:text-white'
                             }`}>
@@ -668,7 +669,7 @@ function App() {
                           </td>
 
                           {role === "admin" && (
-                            <td className="px-3 py-3 sm:px-6 sm:py-4 text-center space-x-2">
+                            <td className="px-6 py-4 text-center space-x-2">
                               <button
                                 onClick={() => handleEdit(t)}
                                 className="text-blue-500 hover:text-blue-700 text-xs font-bold"
@@ -701,7 +702,7 @@ function App() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
 
               {/* PRIMARY EXPENSE */}
-              <div className="glass-card p-4 sm:p-6 lg:p-8 border-b-4 border-b-rose-500">
+              <div className="glass-card p-8 border-b-4 border-b-rose-500">
                 <p className="text-xs uppercase tracking-widest font-bold text-red-500 mb-2">
                   Primary Expense
                 </p>
@@ -714,7 +715,7 @@ function App() {
               </div>
 
               {/* SAVINGS */}
-              <div className="glass-card p-4 sm:p-6 lg:p-8 border-b-4 border-b-emerald-500">
+              <div className="glass-card p-8 border-b-4 border-b-emerald-500">
                 <p className="text-xs uppercase tracking-widest font-bold text-emerald-500 mb-2">
                   Savings Velocity
                 </p>
@@ -727,7 +728,7 @@ function App() {
               </div>
 
               {/* MOM VARIANCE */}
-              <div className="glass-card p-4 sm:p-6 lg:p-8 border-b-4 border-b-blue-500">
+              <div className="glass-card p-8 border-b-4 border-b-blue-500">
                 <p className="text-xs uppercase tracking-widest font-bold text-blue-500 mb-2">
                   MOM Variance
                 </p>
@@ -740,7 +741,7 @@ function App() {
               </div>
 
               {/* WEALTH */}
-              <div className="glass-card p-4 sm:p-6 lg:p-8 border-b-4 border-b-purple-500">
+              <div className="glass-card p-8 border-b-4 border-b-purple-500">
                 <p className="text-xs uppercase tracking-widest font-bold text-indigo-500 mb-2">
                   Wealth Ratio
                 </p>
@@ -753,7 +754,7 @@ function App() {
               </div>
 
               {/* FINANCIAL HEALTH */}
-              <div className="glass-card p-4 sm:p-6 lg:p-8 border-b-4 border-b-indigo-500">
+              <div className="glass-card p-8 border-b-4 border-b-indigo-500">
                 <p className="text-xs uppercase tracking-widest font-bold text-pink-500 mb-2">
                   Financial Health
                 </p>
@@ -770,7 +771,7 @@ function App() {
 
 
             {/* SMART FINANCIAL MESSAGE */}
-            <div className="glass-card p-4 sm:p-6 lg:p-8 text-center border border-slate-200 dark:border-slate-800">
+            <div className="glass-card p-8 text-center border border-slate-200 dark:border-slate-800">
               <h2 className="text-2xl font-bold mb-3 text-slate-900 dark:text-white">
                 Financial Insight Summary
               </h2>
@@ -789,7 +790,7 @@ function App() {
                   Strategic Expense Benchmark
                 </h3>
 
-                <ResponsiveContainer width="100%" height={window.innerWidth < 640 ? 250 : 320}>
+                <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={comparisonDataArr}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
                     <XAxis dataKey="name" stroke="#888" fontSize={12} />
@@ -877,7 +878,7 @@ function App() {
         )}
 
         {activeTab === "recent activity" && (
-          <div className="glass-card p-4 sm:p-6 lg:p-8 animate-in fade-in duration-500">
+          <div className="glass-card p-8 animate-in fade-in duration-500">
             <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">
               Recent Activity
             </h3>
@@ -899,7 +900,7 @@ function App() {
         )}
 
         {activeTab === "notifications" && (
-          <div className="glass-card p-4 sm:p-6 lg:p-8 animate-in fade-in duration-500">
+          <div className="glass-card p-8 animate-in fade-in duration-500">
             <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">
               Notifications
             </h3>
