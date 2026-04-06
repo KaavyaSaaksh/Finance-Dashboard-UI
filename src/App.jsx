@@ -790,7 +790,10 @@ function App() {
                   Strategic Expense Benchmark
                 </h3>
 
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer
+                  width="100%"
+                  height={window.innerWidth < 640 ? 220 : 450}
+                >
                   <BarChart data={comparisonDataArr}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
                     <XAxis dataKey="name" stroke="#888" fontSize={12} />
