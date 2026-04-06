@@ -782,10 +782,10 @@ function App() {
                   : `🔥 Great job! Your expenses decreased by ${Math.abs(monthDiff).toFixed(1)}% this month. You're moving towards stronger financial discipline. Keep it up!`}
               </p>
             </div>
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-10">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-10 auto-rows-fr">
 
               {/* GRAPHS */}
-              <div className="glass-card p-6 xl:col-span-2 h-full flex flex-col">
+              <div className="glass-card p-6 xl:col-span-2 flex flex-col h-full min-h-[350px]">
                 <h3 className="font-bold mb-6 text-slate-900 dark:text-white">
                   Strategic Expense Benchmark
                 </h3>
@@ -806,7 +806,7 @@ function App() {
               </div>
 
               {/* QUICK OBSERVATIONS*/}
-              <div className="glass-card p-6 border border-slate-200 dark:border-slate-800 flex-1 h-full">
+              <div className="glass-card p-6 border border-slate-200 dark:border-slate-800 flex flex-col h-full min-h-[350px]">
 
                 <h4 className="font-bold text-slate-900 dark:text-white mb-4">
                   Quick Observations
