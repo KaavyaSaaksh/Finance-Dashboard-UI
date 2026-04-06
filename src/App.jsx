@@ -403,40 +403,28 @@ function App() {
 
       {/* MAIN CONTENT */}
       <div className="flex-1 bg-gray-50/50 dark:bg-[#020203] p-4 sm:p-6 lg:p-10 overflow-y-auto">
-
         {/* 📱 MOBILE NAVBAR */}
         <div className="lg:hidden flex items-center justify-between mb-6">
-
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">
             FinTrack
           </h2>
 
-          <div className="flex items-center gap-2">
+          <select
+            value={activeTab}
+            onChange={(e) => setActiveTab(e.target.value)}
+            className="p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm text-gray-900 dark:text-white"
+          >
+            <option value="summary">Summary</option>
+            <option value="transactions">Transactions</option>
+            <option value="insights">Insights</option>
+            <option value="recent activity">Recent Activity</option>
+            <option value="notifications">Notifications</option>
+            <option value="settings">Settings</option>
 
-            <select
-              value={role}
-              onChange={(e) => {
-                setRole(e.target.value);
-                if (e.target.value !== "admin") setShowForm(false);
-              }}
-              className="p-1.5 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-xs text-gray-900 dark:text-white"
-            >
-              <option value="viewer">Viewer</option>
-              <option value="admin">Admin</option>
-            </select>
-
-            <button
-              onClick={() => setDarkMode(prev => !prev)}
-              className="p-1.5 px-3 bg-gray-900 dark:bg-white text-white dark:text-black rounded-lg text-xs"
-            >
-              {darkMode ? "☀️" : "🌙"}
-            </button>
-
-          </div>
+          </select>
         </div>
-
-
         <div className="lg:hidden flex gap-3 mb-6">
+
           <select
             onChange={(e) => {
               if (e.target.value === "csv") exportCSV()
@@ -469,10 +457,7 @@ function App() {
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage your financial ecosystem seamlessly.</p>
           </div>
 
-
           <div className="flex flex-wrap gap-4 items-end">
-
-            {/* Perspective*/}
             <div className="space-y-1">
               <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Perspective</p>
               <select
@@ -488,7 +473,6 @@ function App() {
               </select>
             </div>
 
-            {/* Period */}
             <div className="space-y-1">
               <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Period</p>
               <select
@@ -504,24 +488,6 @@ function App() {
               </select>
             </div>
 
-            {/* Tabs*/}
-            <div className="space-y-1 lg:hidden">
-              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">View</p>
-              <select
-                value={activeTab}
-                onChange={(e) => setActiveTab(e.target.value)}
-                className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-sm text-gray-700 dark:text-gray-300"
-              >
-                <option value="summary">Summary</option>
-                <option value="transactions">Transactions</option>
-                <option value="insights">Insights</option>
-                <option value="recent activity">Recent Activity</option>
-                <option value="notifications">Notifications</option>
-                <option value="settings">Settings</option>
-              </select>
-            </div>
-
-            {/* Theme */}
             <button
               onClick={() => setDarkMode(prev => !prev)}
               className="p-2.5 px-5 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-sm shadow-lg transition-transform active:scale-95"
@@ -530,7 +496,6 @@ function App() {
             </button>
           </div>
         </div>
-
 
         {/* Overview section showing key financial metrics and charts */}
         {activeTab === "summary" && (
@@ -1005,8 +970,9 @@ function App() {
             </div>
           </div>
         )}
+
       </div>
-    </div>
+    </div >
   )
 }
 
