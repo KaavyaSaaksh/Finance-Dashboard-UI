@@ -423,6 +423,32 @@ function App() {
 
           </select>
         </div>
+        <div className="lg:hidden flex gap-3 mb-6">
+
+          <select
+            onChange={(e) => {
+              if (e.target.value === "csv") exportCSV()
+              if (e.target.value === "json") exportJSON()
+              if (e.target.value === "excel") exportExcel()
+            }}
+            className="flex-1 p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm text-gray-900 dark:text-white"
+          >
+            <option>Export</option>
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+            <option value="excel">Excel</option>
+          </select>
+
+          <a
+            href="https://fintrack.ac.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold"
+          >
+            Help
+          </a>
+
+        </div>
 
         {/* HEADER BAR */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
