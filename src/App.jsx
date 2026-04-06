@@ -470,65 +470,64 @@ function App() {
           </div>
 
 
-            <div className="flex flex-wrap gap-4 items-end">
+          <div className="flex flex-wrap gap-4 items-end">
 
-              {/* Perspective*/}
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Perspective</p>
-                <select
-                  value={role}
-                  onChange={(e) => {
-                    setRole(e.target.value);
-                    if (e.target.value !== "admin") setShowForm(false);
-                  }}
-                  className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
-                >
-                  <option value="viewer">Viewer Mode</option>
-                  <option value="admin">Administrator</option>
-                </select>
-              </div>
-
-              {/* Period */}
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Period</p>
-                <select
-                  value={timeFilter}
-                  onChange={(e) => setTimeFilter(e.target.value)}
-                  className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
-                >
-                  <option value="all">All Time</option>
-                  <option value="30">Last 30 days</option>
-                  <option value="90">Last 3 months</option>
-                  <option value="180">Last 6 months</option>
-                  <option value="365">Last 1 year</option>
-                </select>
-              </div>
-
-              {/* Tabs*/}
-              <div className="space-y-1 lg:hidden">
-                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">View</p>
-                <select
-                  value={activeTab}
-                  onChange={(e) => setActiveTab(e.target.value)}
-                  className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-sm text-gray-700 dark:text-gray-300"
-                >
-                  <option value="summary">Summary</option>
-                  <option value="transactions">Transactions</option>
-                  <option value="insights">Insights</option>
-                  <option value="recent activity">Recent Activity</option>
-                  <option value="notifications">Notifications</option>
-                  <option value="settings">Settings</option>
-                </select>
-              </div>
-
-              {/* Theme */}
-              <button
-                onClick={() => setDarkMode(prev => !prev)}
-                className="p-2.5 px-5 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-sm shadow-lg transition-transform active:scale-95"
+            {/* Perspective*/}
+            <div className="space-y-1">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Perspective</p>
+              <select
+                value={role}
+                onChange={(e) => {
+                  setRole(e.target.value);
+                  if (e.target.value !== "admin") setShowForm(false);
+                }}
+                className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
               >
-                {darkMode ? "☀️ Light" : "🌙 Dark"}
-              </button>
+                <option value="viewer">Viewer Mode</option>
+                <option value="admin">Administrator</option>
+              </select>
             </div>
+
+            {/* Period */}
+            <div className="space-y-1">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Period</p>
+              <select
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)}
+                className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
+              >
+                <option value="all">All Time</option>
+                <option value="30">Last 30 days</option>
+                <option value="90">Last 3 months</option>
+                <option value="180">Last 6 months</option>
+                <option value="365">Last 1 year</option>
+              </select>
+            </div>
+
+            {/* Tabs*/}
+            <div className="space-y-1 lg:hidden">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">View</p>
+              <select
+                value={activeTab}
+                onChange={(e) => setActiveTab(e.target.value)}
+                className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-sm text-gray-700 dark:text-gray-300"
+              >
+                <option value="summary">Summary</option>
+                <option value="transactions">Transactions</option>
+                <option value="insights">Insights</option>
+                <option value="recent activity">Recent Activity</option>
+                <option value="notifications">Notifications</option>
+                <option value="settings">Settings</option>
+              </select>
+            </div>
+
+            {/* Theme */}
+            <button
+              onClick={() => setDarkMode(prev => !prev)}
+              className="p-2.5 px-5 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-sm shadow-lg transition-transform active:scale-95"
+            >
+              {darkMode ? "☀️ Light" : "🌙 Dark"}
+            </button>
           </div>
         </div>
 
@@ -1006,9 +1005,8 @@ function App() {
             </div>
           </div>
         )}
-
       </div>
-    </div >
+    </div>
   )
 }
 
