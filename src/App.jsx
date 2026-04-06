@@ -239,8 +239,8 @@ function App() {
   Object.values(monthlyDataMap).forEach(m => {
     m.savings = m.income - m.expense;
   });
-  const monthlyData = Object.values(monthlyDataMap);
-
+  const monthlyData = Object.values(monthlyDataMap)
+    .sort((a, b) => new Date(a.month) - new Date(b.month));
 
   // Calculate total spending per category (for pie chart)
   const categoryTotals = {}
@@ -404,548 +404,622 @@ function App() {
       {/* MAIN CONTENT */}
       <div className="flex-1 bg-gray-50/50 dark:bg-[#020203] p-4 sm:p-6 lg:p-10 overflow-y-auto">
         {/* 📱 MOBILE NAVBAR */}
-        <div className="lg:hidden flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-            FinTrack
-          </h2>
+        {/* 📱 MOBILE EXPORT + SUPPORT */}
+        {/* 📱 MOBILE NAVBAR (UPDATED) */}
+        <div className="lg:hidden mb-6 space-y-3">
 
-          <select
-            value={activeTab}
-            onChange={(e) => setActiveTab(e.target.value)}
-            className="p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm"
-          >
-            <option value="summary">Summary</option>
-            <option value="transactions">Transactions</option>
-            <option value="insights">Insights</option>
-            <option value="recent activity">Recent Activity</option>
-            <option value="notifications">Notifications</option>
-            <option value="settings">Settings</option>
+          {/* ROW 1 → Tabs LEFT + Perspective + Theme RIGHT */}
+          <div className="flex gap-2 items-center">
 
-          </select>
-        </div>
+            {/* Tabs */}
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+              className="flex-1 p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm text-gray-800 dark:text-white"
+            >
+              <option value="summary">Summary</option>
+              <option value="transactions">Transactions</option>
+              <option value="insights">Insights</option>
+              <option value="recent activity">Activity</option>
+              <option value="notifications">Alerts</option>
+              <option value="settings">Settings</option>
+            </select>
 
-        {/* HEADER BAR */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white capitalize tracking-tight">{activeTab}</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage your financial ecosystem seamlessly.</p>
-          </div>
+            {/* Perspective */}
+            <select
+              value={role}
+              onChange={(e) => {
+                setRole(e.target.value);
+                if (e.target.value !== "admin") setShowForm(false);
+              }}
+              className="p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm text-gray-800 dark:text-white"
+            >
+              <option value="viewer">Viewer</option>
+              <option value="admin">Admin</option>
+            </select>
 
-          <div className="flex flex-wrap gap-4 items-end">
-            <div className="space-y-1">
-              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Perspective</p>
-              <select
-                value={role}
-                onChange={(e) => {
-                  setRole(e.target.value);
-                  if (e.target.value !== "admin") setShowForm(false);
-                }}
-                className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
-              >
-                <option value="viewer">Viewer Mode</option>
-                <option value="admin">Administrator</option>
-              </select>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Period</p>
-              <select
-                value={timeFilter}
-                onChange={(e) => setTimeFilter(e.target.value)}
-                className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
-              >
-                <option value="all">All Time</option>
-                <option value="30">Last 30 days</option>
-                <option value="90">Last 3 months</option>
-                <option value="180">Last 6 months</option>
-                <option value="365">Last 1 year</option>
-              </select>
-            </div>
-
+            {/* Theme */}
             <button
               onClick={() => setDarkMode(prev => !prev)}
-              className="p-2.5 px-5 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-sm shadow-lg transition-transform active:scale-95"
+              className="p-2 px-3 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black text-sm font-semibold"
             >
-              {darkMode ? "☀️ Light" : "🌙 Dark"}
+              {darkMode ? "☀️" : "🌙"}
             </button>
+
           </div>
+
+          {/* ROW 2 → Period */}
+          <select
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)}
+            className="w-full p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm text-gray-800 dark:text-white"
+          >
+            <option value="all">All Time</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 3 months</option>
+            <option value="180">Last 6 months</option>
+            <option value="365">Last 1 year</option>
+          </select>
+
         </div>
 
-        {/* Overview section showing key financial metrics and charts */}
-        {activeTab === "summary" && (
-          <div className="space-y-6 animate-in fade-in duration-700">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="glass-card p-6 border-l-4 border-l-blue-500">
-                <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Total Net Balance</p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">₹{balance.toLocaleString()}</h3>
-                <div className="mt-2 text-[10px] font-bold text-blue-500">LIQUID CAPITAL</div>
-              </div>
-              <div className="glass-card p-6 border-l-4 border-l-emerald-500">
-                <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Monthly Revenue</p>
-                <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">₹{income.toLocaleString()}</h3>
-                <div className="mt-2 text-[10px] font-bold text-emerald-500">{(income > 0 ? (balance / income) * 100 : 0).toFixed(1)}% SAVINGS RATE</div>
-              </div>
-              <div className="glass-card p-6 border-l-4 border-l-rose-500">
-                <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Total Expenditure</p>
-                <h3 className="text-2xl font-bold text-rose-600 dark:text-rose-400">₹{expenses.toLocaleString()}</h3>
-                <div className="mt-2 text-[10px] font-bold text-rose-500">{(income > 0 ? (expenses / income) * 100 : 0).toFixed(1)}% BURN RATE</div>
-              </div>
-              <div className="glass-card p-6 border-l-4 border-l-purple-500">
-                <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Avg daily spend</p>
-                <h3 className="text-2xl font-bold text-purple-600 dark:text-purple-400">₹{Math.round(expenses / (timeFilter === "all" ? 30 : Number(timeFilter))).toLocaleString()}</h3>
-                <div className="mt-2 text-[10px] font-bold text-purple-500">30-DAY CYCLE BASIS</div>
-              </div>
-            </div>
+        {/* EXPORT */}
+        <select
+          onChange={(e) => {
+            if (e.target.value === "csv") exportCSV()
+            if (e.target.value === "json") exportJSON()
+            if (e.target.value === "excel") exportExcel()
+          }}
+          className="w-full p-3 rounded-xl bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm text-gray-800 dark:text-white"
+        >
+          <option>Export Reports</option>
+          <option value="csv">CSV</option>
+          <option value="json">JSON</option>
+          <option value="excel">Excel</option>
+        </select>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-              <div className="glass-card p-8">
-                <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">Cash Flow Trends</h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <AreaChart data={lineData}>
-                    <defs>
-                      <linearGradient id="colorAmt" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
-                    <XAxis dataKey="date" stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
-                    <Area type="monotone" dataKey="amount" stroke="#3b82f6" fillOpacity={1} fill="url(#colorAmt)" strokeWidth={3} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="glass-card p-8">
-                <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">Expense Allocation</h3>
-                <ResponsiveContainer width="100%" height={320}>
-                  <PieChart margin={{ top: 20, bottom: 20 }}>
-                    <Pie
-                      data={pieData}
-                      innerRadius={70}
-                      outerRadius={100}
-                      paddingAngle={5}
-                      dataKey="value"
-                      nameKey="category"
-                      labelLine={false}
-                      label={({ category, percent }) =>
-                        `${category} ${percent}%`
-                      }
-                    >
-                      {pieData.map((_, i) => (
-                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                      ))}
-                    </Pie>
-
-                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-
-              <div className="glass-card p-8">
-                <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">
-                  Income vs Expense
-                </h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={monthlyData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#333" : "#eee"} />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                    <Bar dataKey="income" fill="#10b981" />
-                    <Bar dataKey="expense" fill="#ef4444" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="glass-card p-8">
-                <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">
-                  Monthly Savings Trend
-                </h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <LineChart data={monthlyData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#333" : "#eee"} />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                    <Line type="monotone" dataKey="savings" stroke="#10b981" strokeWidth={3} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Transactions section where user can view, filter and manage entries */}
-        {activeTab === "transactions" && (
-          <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <input placeholder="Search category..." value={search} onChange={(e) => setSearch(e.target.value)} className="glass-card px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white" />
-              <select onChange={(e) => setFilterType(e.target.value)} className="glass-card px-4 py-3 outline-none dark:bg-gray-900 dark:text-white">
-                <option value="all">All Types</option>
-                <option value="income">Income Only</option>
-                <option value="expense">Expense Only</option>
-              </select>
-              <select onChange={(e) => setCategoryFilter(e.target.value)} className="glass-card px-4 py-3 outline-none dark:bg-gray-900 dark:text-white">
-                <option value="all">All Categories</option>
-                {categories.map((c, i) => <option key={i}>{c}</option>)}
-              </select>
-              <select onChange={(e) => setSortBy(e.target.value)} className="glass-card px-4 py-3 outline-none dark:bg-gray-900 dark:text-white">
-                <option value="date">Sort by Date</option>
-                <option value="amount">Sort by Amount</option>
-              </select>
-            </div>
-
-            <div className="glass-card overflow-hidden">
-              <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-                <h3 className="font-bold text-gray-800 dark:text-white">Transaction History</h3>
-                {role === "admin" && (
-                  <button
-                    onClick={() => setShowForm(!showForm)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-bold transition-all"
-                  >
-                    {showForm ? "✕ Close Editor" : "+ New Entry"}
-                  </button>
-                )}
-              </div>
-
-              {showForm && role === "admin" && (
-                <div className="p-6 bg-gray-50 dark:bg-gray-800/50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 border-b border-gray-100 dark:border-gray-800">
-                  <input name="amount" placeholder="Amount ₹" value={newTransaction.amount} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white" />
-                  <input name="category" placeholder="Category" value={newTransaction.category} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white" />
-                  <select name="type" value={newTransaction.type} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white">
-                    <option value="expense">Expense</option>
-                    <option value="income">Income</option>
-                  </select>
-                  <input type="date" name="date" value={newTransaction.date} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white" />
-                  <button onClick={handleAddTransaction} className="bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors">
-                    {editId ? "Update" : "Confirm"}
-                  </button>
-                </div>
-              )}
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="bg-gray-50 dark:bg-gray-800/30 text-gray-400 text-[11px] uppercase tracking-widest font-bold">
-                      <th className="px-6 py-4">Category</th>
-                      <th className="px-6 py-4">Date</th>
-                      <th className="px-6 py-4 text-right">Amount</th>
-                      {role === "admin" && <th className="px-6 py-4 text-center">Actions</th>}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {filtered.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={role === "admin" ? 4 : 3}
-                          className="text-center py-10 text-gray-500 dark:text-gray-400"
-                        >
-                          🚫 No transactions available
-                        </td>
-                      </tr>
-                    ) : (
-                      filtered.map(t => (
-                        <tr key={t.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-2 h-2 rounded-full ${t.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
-                              <span className="font-semibold text-gray-700 dark:text-gray-200">{t.category}</span>
-                            </div>
-                          </td>
-
-                          <td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
-                            {t.date}
-                          </td>
-
-                          <td className={`px-6 py-4 text-right font-bold ${t.type === 'income'
-                            ? 'text-emerald-600'
-                            : 'text-gray-900 dark:text-white'
-                            }`}>
-                            {t.type === 'income' ? '+' : '-'} ₹{t.amount.toLocaleString()}
-                          </td>
-
-                          {role === "admin" && (
-                            <td className="px-6 py-4 text-center space-x-2">
-                              <button
-                                onClick={() => handleEdit(t)}
-                                className="text-blue-500 hover:text-blue-700 text-xs font-bold"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDelete(t.id)}
-                                className="text-rose-500 hover:text-rose-700 text-xs font-bold"
-                              >
-                                Del
-                              </button>
-                            </td>
-                          )}
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Insights section highlighting spending patterns and financial health */}
-        {activeTab === "insights" && (
-          <div className="space-y-8 animate-in zoom-in duration-500">
-
-            {/* TOP CARDS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-
-              {/* PRIMARY EXPENSE */}
-              <div className="glass-card p-8 border-b-4 border-b-rose-500">
-                <p className="text-xs uppercase tracking-widest font-bold text-red-500 mb-2">
-                  Primary Expense
-                </p>
-                <h2 className="text-3xl font-black text-rose-500">
-                  {topCategory ? topCategory[0] : "N/A"}
-                </h2>
-                <p className="text-rose-500 font-bold mt-2 text-xl">
-                  ₹{topCategory ? topCategory[1].toLocaleString() : 0}
-                </p>
-              </div>
-
-              {/* SAVINGS */}
-              <div className="glass-card p-8 border-b-4 border-b-emerald-500">
-                <p className="text-xs uppercase tracking-widest font-bold text-emerald-500 mb-2">
-                  Savings Velocity
-                </p>
-                <h2 className="text-3xl font-black text-emerald-500">
-                  {income > 0 ? ((balance / income) * 100).toFixed(1) : 0}%
-                </h2>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 italic">
-                  Retained from total income
-                </p>
-              </div>
-
-              {/* MOM VARIANCE */}
-              <div className="glass-card p-8 border-b-4 border-b-blue-500">
-                <p className="text-xs uppercase tracking-widest font-bold text-blue-500 mb-2">
-                  MOM Variance
-                </p>
-                <h2 className={`text-3xl font-black ${monthDiff > 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
-                  {monthDiff > 0 ? "+" : ""}{monthDiff.toFixed(1)}%
-                </h2>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
-                  Vs Previous Month
-                </p>
-              </div>
-
-              {/* WEALTH */}
-              <div className="glass-card p-8 border-b-4 border-b-purple-500">
-                <p className="text-xs uppercase tracking-widest font-bold text-indigo-500 mb-2">
-                  Wealth Ratio
-                </p>
-                <h2 className="text-3xl font-black text-purple-500">
-                  {expenses > 0 ? (balance / expenses).toFixed(2) : "0"}
-                </h2>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 italic">
-                  Balance to Expense Ratio
-                </p>
-              </div>
-
-              {/* FINANCIAL HEALTH */}
-              <div className="glass-card p-8 border-b-4 border-b-indigo-500">
-                <p className="text-xs uppercase tracking-widest font-bold text-pink-500 mb-2">
-                  Financial Health
-                </p>
-                <h2 className="text-3xl font-black text-indigo-500">
-                  {balance > (income * 0.2) ? "Excellent" : "Stable"}
-                </h2>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
-                  {monthDiff > 0
-                    ? `Spending increased by ${monthDiff.toFixed(1)}%. Review ${topCategory?.[0]} budget.`
-                    : "Spending reduced. Your financial position is improving."}
-                </p>
-              </div>
-            </div>
-
-
-            {/* SMART FINANCIAL MESSAGE */}
-            <div className="glass-card p-8 text-center border border-slate-200 dark:border-slate-800">
-              <h2 className="text-2xl font-bold mb-3 text-slate-900 dark:text-white">
-                Financial Insight Summary
-              </h2>
-              <p className={`text-lg font-semibold ${monthDiff > 0 ? "text-rose-500" : "text-emerald-500"
-                }`}>
-                {monthDiff > 0
-                  ? `⚠️ Your expenses increased by ${monthDiff.toFixed(1)}% compared to last month. It's time to take control and optimize your spending habits. Small changes can create big savings!`
-                  : `🔥 Great job! Your expenses decreased by ${Math.abs(monthDiff).toFixed(1)}% this month. You're moving towards stronger financial discipline. Keep it up!`}
-              </p>
-            </div>
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-10">
-
-              {/* GRAPHS */}
-              <div className="glass-card p-6 xl:col-span-2 h-full flex flex-col">
-                <h3 className="font-bold mb-6 text-slate-900 dark:text-white">
-                  Strategic Expense Benchmark
-                </h3>
-
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={comparisonDataArr}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
-                    <XAxis dataKey="name" stroke="#888" fontSize={12} />
-                    <YAxis stroke="#888" fontSize={12} />
-                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                    <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={60}>
-                      {comparisonDataArr.map((entry, index) => (
-                        <Cell key={index} fill={index === 2 ? (monthDiff > 0 ? '#ef4444' : '#10b981') : '#3b82f6'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* QUICK OBSERVATIONS*/}
-              <div className="glass-card p-6 border border-slate-200 dark:border-slate-800 flex-1 h-full">
-
-                <h4 className="font-bold text-slate-900 dark:text-white mb-4">
-                  Quick Observations
-                </h4>
-
-                <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
-                  AI-driven insights based on your financial behavior
-                </p>
-
-                <ul className="space-y-6 text-[15px] leading-relaxed">
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-emerald-500"></div>
-                    <span>Your primary income source remains <b>Salary</b>, ensuring a stable income stream.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-blue-500"></div>
-                    <span>Average monthly spending is <b>₹{Math.round(last3MonthsAvg).toLocaleString()}</b>, defining your lifestyle baseline.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-rose-500"></div>
-                    <span>Most volatile category is <b>{topCategory?.[0]}</b>, causing major expense fluctuations.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-purple-500"></div>
-                    <span>Savings rate is <b>{(income > 0 ? (balance / income) * 100 : 0).toFixed(1)}%</b>, reflecting strong discipline.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-yellow-500"></div>
-                    <span>Current month spending is <b>₹{currentMonthExp.toLocaleString()}</b>, showing trend changes.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-indigo-500"></div>
-                    <span>{avgDiff.toFixed(1)}% deviation from your 3-month average spending pattern.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-pink-500"></div>
-                    <span>Maintaining this savings rate will significantly improve long-term financial growth.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-cyan-500"></div>
-                    <span>Reducing spending in <b>{topCategory?.[0]}</b> can boost savings efficiency.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-orange-500"></div>
-                    <span>Expense spikes suggest irregular spending habits that can be optimized.</span>
-                  </li>
-
-                  <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-lime-500"></div>
-                    <span>Overall, your financial trajectory is positive with scope for further optimization.</span>
-                  </li>
-
-                </ul>
-
-              </div>
-
-            </div>
-
-          </div>
-        )}
-
-        {activeTab === "recent activity" && (
-          <div className="glass-card p-8 animate-in fade-in duration-500">
-            <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">
-              Recent Activity
-            </h3>
-
-            <div className="space-y-4">
-              {transactions.slice(0, 10).map((t, i) => (
-                <div key={i} className="flex justify-between items-center border-b pb-3 border-gray-100 dark:border-gray-800">
-                  <div>
-                    <p className="font-semibold text-gray-800 dark:text-white">{t.category}</p>
-                    <p className="text-xs text-gray-500">{t.date}</p>
-                  </div>
-                  <p className={`font-bold ${t.type === "income" ? "text-emerald-500" : "text-rose-500"}`}>
-                    {t.type === "income" ? "+" : "-"} ₹{t.amount}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === "notifications" && (
-          <div className="glass-card p-8 animate-in fade-in duration-500">
-            <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">
-              Notifications
-            </h3>
-
-            <div className="space-y-4 text-sm">
-
-              {expenses > income && (
-                <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600">
-                  ⚠️ Your expenses are higher than your income.
-                </div>
-              )}
-
-              {balance > income * 0.3 && (
-                <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600">
-                  💰 Great job! You're saving well this month.
-                </div>
-              )}
-
-              {filtered.length === 0 && (
-                <div className="p-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500">
-                  📭 No transactions found for selected filters.
-                </div>
-              )}
-
-            </div>
-          </div>
-        )}
-
-        {/* SETTINGS TAB */}
-        {activeTab === "settings" && (
-          <div className="glass-card p-10 max-w-2xl animate-in fade-in duration-500 text-gray-900 dark:text-white">
-            <h3 className="text-xl font-bold mb-6">User Configuration</h3>
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
-              <div>
-                <p className="font-bold">System Role</p>
-                <p className="text-sm text-gray-500">Defines your access permissions</p>
-              </div>
-              <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs font-black uppercase rounded-full">
-                {role}
-              </span>
-            </div>
-          </div>
-        )}
+        {/* HELP */}
+        <div className="p-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm">
+          <p className="font-bold text-gray-800 dark:text-white mb-1">
+            Need Help?
+          </p>
+          <a
+            href="https://fintrack.ac.in"
+            target="_blank"
+            className="text-blue-500 underline"
+          >
+            Visit Support Center
+          </a>
+        </div>
 
       </div>
+
+      {/* HEADER BAR */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white capitalize tracking-tight">{activeTab}</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage your financial ecosystem seamlessly.</p>
+        </div>
+
+        <div className="flex flex-wrap gap-4 items-end">
+          <div className="space-y-1">
+            <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Perspective</p>
+            <select
+              value={role}
+              onChange={(e) => {
+                setRole(e.target.value);
+                if (e.target.value !== "admin") setShowForm(false);
+              }}
+              className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
+            >
+              <option value="viewer">Viewer Mode</option>
+              <option value="admin">Administrator</option>
+            </select>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Period</p>
+            <select
+              value={timeFilter}
+              onChange={(e) => setTimeFilter(e.target.value)}
+              className="p-2.5 px-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm text-sm font-medium outline-none text-gray-700 dark:text-gray-300"
+            >
+              <option value="all">All Time</option>
+              <option value="30">Last 30 days</option>
+              <option value="90">Last 3 months</option>
+              <option value="180">Last 6 months</option>
+              <option value="365">Last 1 year</option>
+            </select>
+          </div>
+
+          <button
+            onClick={() => setDarkMode(prev => !prev)}
+            className="p-2.5 px-5 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-sm shadow-lg transition-transform active:scale-95"
+          >
+            {darkMode ? "☀️ Light" : "🌙 Dark"}
+          </button>
+        </div>
+      </div>
+
+      {/* Overview section showing key financial metrics and charts */}
+      {activeTab === "summary" && (
+        <div className="space-y-6 animate-in fade-in duration-700">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="glass-card p-6 border-l-4 border-l-blue-500">
+              <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Total Net Balance</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">₹{balance.toLocaleString()}</h3>
+              <div className="mt-2 text-[10px] font-bold text-blue-500">LIQUID CAPITAL</div>
+            </div>
+            <div className="glass-card p-6 border-l-4 border-l-emerald-500">
+              <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Monthly Revenue</p>
+              <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">₹{income.toLocaleString()}</h3>
+              <div className="mt-2 text-[10px] font-bold text-emerald-500">{(income > 0 ? (balance / income) * 100 : 0).toFixed(1)}% SAVINGS RATE</div>
+            </div>
+            <div className="glass-card p-6 border-l-4 border-l-rose-500">
+              <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Total Expenditure</p>
+              <h3 className="text-2xl font-bold text-rose-600 dark:text-rose-400">₹{expenses.toLocaleString()}</h3>
+              <div className="mt-2 text-[10px] font-bold text-rose-500">{(income > 0 ? (expenses / income) * 100 : 0).toFixed(1)}% BURN RATE</div>
+            </div>
+            <div className="glass-card p-6 border-l-4 border-l-purple-500">
+              <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Avg daily spend</p>
+              <h3 className="text-2xl font-bold text-purple-600 dark:text-purple-400">₹{Math.round(expenses / (timeFilter === "all" ? 30 : Number(timeFilter))).toLocaleString()}</h3>
+              <div className="mt-2 text-[10px] font-bold text-purple-500">30-DAY CYCLE BASIS</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <div className="glass-card p-8">
+              <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">Cash Flow Trends</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <AreaChart data={lineData}>
+                  <defs>
+                    <linearGradient id="colorAmt" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
+                  <XAxis dataKey="date" stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                  <Area type="monotone" dataKey="amount" stroke="#3b82f6" fillOpacity={1} fill="url(#colorAmt)" strokeWidth={3} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="glass-card p-8">
+              <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">Expense Allocation</h3>
+              <ResponsiveContainer width="100%" height={320}>
+                <PieChart margin={{ top: 20, bottom: 20 }}>
+                  <Pie
+                    data={pieData}
+                    innerRadius={70}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                    nameKey="category"
+                    labelLine={false}
+                    label={({ category, percent }) =>
+                      `${category} ${percent}%`
+                    }
+                  >
+                    {pieData.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    ))}
+                  </Pie>
+
+                  <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+
+            <div className="glass-card p-8">
+              <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">
+                Income vs Expense
+              </h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#333" : "#eee"} />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                  <Bar dataKey="income" fill="#10b981" />
+                  <Bar dataKey="expense" fill="#ef4444" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="glass-card p-8">
+              <h3 className="font-bold mb-6 text-gray-800 dark:text-gray-200">
+                Monthly Savings Trend
+              </h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#333" : "#eee"} />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                  <Line type="monotone" dataKey="savings" stroke="#10b981" strokeWidth={3} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Transactions section where user can view, filter and manage entries */}
+      {activeTab === "transactions" && (
+        <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <input placeholder="Search category..." value={search} onChange={(e) => setSearch(e.target.value)} className="glass-card px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white" />
+            <select onChange={(e) => setFilterType(e.target.value)} className="glass-card px-4 py-3 outline-none dark:bg-gray-900 dark:text-white">
+              <option value="all">All Types</option>
+              <option value="income">Income Only</option>
+              <option value="expense">Expense Only</option>
+            </select>
+            <select onChange={(e) => setCategoryFilter(e.target.value)} className="glass-card px-4 py-3 outline-none dark:bg-gray-900 dark:text-white">
+              <option value="all">All Categories</option>
+              {categories.map((c, i) => <option key={i}>{c}</option>)}
+            </select>
+            <select onChange={(e) => setSortBy(e.target.value)} className="glass-card px-4 py-3 outline-none dark:bg-gray-900 dark:text-white">
+              <option value="date">Sort by Date</option>
+              <option value="amount">Sort by Amount</option>
+            </select>
+          </div>
+
+          <div className="glass-card overflow-hidden">
+            <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+              <h3 className="font-bold text-gray-800 dark:text-white">Transaction History</h3>
+              {role === "admin" && (
+                <button
+                  onClick={() => setShowForm(!showForm)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-bold transition-all"
+                >
+                  {showForm ? "✕ Close Editor" : "+ New Entry"}
+                </button>
+              )}
+            </div>
+
+            {showForm && role === "admin" && (
+              <div className="p-6 bg-gray-50 dark:bg-gray-800/50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 border-b border-gray-100 dark:border-gray-800">
+                <input name="amount" placeholder="Amount ₹" value={newTransaction.amount} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white" />
+                <input name="category" placeholder="Category" value={newTransaction.category} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white" />
+                <select name="type" value={newTransaction.type} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white">
+                  <option value="expense">Expense</option>
+                  <option value="income">Income</option>
+                </select>
+                <input type="date" name="date" value={newTransaction.date} onChange={handleChange} className="p-2.5 rounded-lg border dark:border-gray-700 dark:bg-gray-900 outline-none text-white" />
+                <button onClick={handleAddTransaction} className="bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors">
+                  {editId ? "Update" : "Confirm"}
+                </button>
+              </div>
+            )}
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-800/30 text-gray-400 text-[11px] uppercase tracking-widest font-bold">
+                    <th className="px-6 py-4">Category</th>
+                    <th className="px-6 py-4">Date</th>
+                    <th className="px-6 py-4 text-right">Amount</th>
+                    {role === "admin" && <th className="px-6 py-4 text-center">Actions</th>}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {filtered.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={role === "admin" ? 4 : 3}
+                        className="text-center py-10 text-gray-500 dark:text-gray-400"
+                      >
+                        🚫 No transactions available
+                      </td>
+                    </tr>
+                  ) : (
+                    filtered.map(t => (
+                      <tr key={t.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-2 h-2 rounded-full ${t.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
+                            <span className="font-semibold text-gray-700 dark:text-gray-200">{t.category}</span>
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
+                          {t.date}
+                        </td>
+
+                        <td className={`px-6 py-4 text-right font-bold ${t.type === 'income'
+                          ? 'text-emerald-600'
+                          : 'text-gray-900 dark:text-white'
+                          }`}>
+                          {t.type === 'income' ? '+' : '-'} ₹{t.amount.toLocaleString()}
+                        </td>
+
+                        {role === "admin" && (
+                          <td className="px-6 py-4 text-center space-x-2">
+                            <button
+                              onClick={() => handleEdit(t)}
+                              className="text-blue-500 hover:text-blue-700 text-xs font-bold"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(t.id)}
+                              className="text-rose-500 hover:text-rose-700 text-xs font-bold"
+                            >
+                              Del
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Insights section highlighting spending patterns and financial health */}
+      {activeTab === "insights" && (
+        <div className="space-y-8 animate-in zoom-in duration-500">
+
+          {/* TOP CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+
+            {/* PRIMARY EXPENSE */}
+            <div className="glass-card p-8 border-b-4 border-b-rose-500">
+              <p className="text-xs uppercase tracking-widest font-bold text-red-500 mb-2">
+                Primary Expense
+              </p>
+              <h2 className="text-3xl font-black text-rose-500">
+                {topCategory ? topCategory[0] : "N/A"}
+              </h2>
+              <p className="text-rose-500 font-bold mt-2 text-xl">
+                ₹{topCategory ? topCategory[1].toLocaleString() : 0}
+              </p>
+            </div>
+
+            {/* SAVINGS */}
+            <div className="glass-card p-8 border-b-4 border-b-emerald-500">
+              <p className="text-xs uppercase tracking-widest font-bold text-emerald-500 mb-2">
+                Savings Velocity
+              </p>
+              <h2 className="text-3xl font-black text-emerald-500">
+                {income > 0 ? ((balance / income) * 100).toFixed(1) : 0}%
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 italic">
+                Retained from total income
+              </p>
+            </div>
+
+            {/* MOM VARIANCE */}
+            <div className="glass-card p-8 border-b-4 border-b-blue-500">
+              <p className="text-xs uppercase tracking-widest font-bold text-blue-500 mb-2">
+                MOM Variance
+              </p>
+              <h2 className={`text-3xl font-black ${monthDiff > 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                {monthDiff > 0 ? "+" : ""}{monthDiff.toFixed(1)}%
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                Vs Previous Month
+              </p>
+            </div>
+
+            {/* WEALTH */}
+            <div className="glass-card p-8 border-b-4 border-b-purple-500">
+              <p className="text-xs uppercase tracking-widest font-bold text-indigo-500 mb-2">
+                Wealth Ratio
+              </p>
+              <h2 className="text-3xl font-black text-purple-500">
+                {expenses > 0 ? (balance / expenses).toFixed(2) : "0"}
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 italic">
+                Balance to Expense Ratio
+              </p>
+            </div>
+
+            {/* FINANCIAL HEALTH */}
+            <div className="glass-card p-8 border-b-4 border-b-indigo-500">
+              <p className="text-xs uppercase tracking-widest font-bold text-pink-500 mb-2">
+                Financial Health
+              </p>
+              <h2 className="text-3xl font-black text-indigo-500">
+                {balance > (income * 0.2) ? "Excellent" : "Stable"}
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                {monthDiff > 0
+                  ? `Spending increased by ${monthDiff.toFixed(1)}%. Review ${topCategory?.[0]} budget.`
+                  : "Spending reduced. Your financial position is improving."}
+              </p>
+            </div>
+          </div>
+
+
+          {/* SMART FINANCIAL MESSAGE */}
+          <div className="glass-card p-8 text-center border border-slate-200 dark:border-slate-800">
+            <h2 className="text-2xl font-bold mb-3 text-slate-900 dark:text-white">
+              Financial Insight Summary
+            </h2>
+            <p className={`text-lg font-semibold ${monthDiff > 0 ? "text-rose-500" : "text-emerald-500"
+              }`}>
+              {monthDiff > 0
+                ? `⚠️ Your expenses increased by ${monthDiff.toFixed(1)}% compared to last month. It's time to take control and optimize your spending habits. Small changes can create big savings!`
+                : `🔥 Great job! Your expenses decreased by ${Math.abs(monthDiff).toFixed(1)}% this month. You're moving towards stronger financial discipline. Keep it up!`}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-10">
+
+            {/* GRAPHS */}
+            <div className="glass-card p-6 xl:col-span-2 h-full flex flex-col">
+              <h3 className="font-bold mb-6 text-slate-900 dark:text-white">
+                Strategic Expense Benchmark
+              </h3>
+
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={comparisonDataArr}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
+                  <XAxis dataKey="name" stroke="#888" fontSize={12} />
+                  <YAxis stroke="#888" fontSize={12} />
+                  <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                  <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={60}>
+                    {comparisonDataArr.map((entry, index) => (
+                      <Cell key={index} fill={
+                        index === comparisonDataArr.length - 1
+                          ? (monthDiff > 0 ? '#ef4444' : '#10b981')
+                          : '#3b82f6'
+                      }
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* QUICK OBSERVATIONS*/}
+            <div className="glass-card p-6 border border-slate-200 dark:border-slate-800 flex-1 h-full">
+
+              <h4 className="font-bold text-slate-900 dark:text-white mb-4">
+                Quick Observations
+              </h4>
+
+              <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
+                AI-driven insights based on your financial behavior
+              </p>
+
+              <ul className="space-y-6 text-[15px] leading-relaxed">
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-emerald-500"></div>
+                  <span>Your primary income source remains <b>Salary</b>, ensuring a stable income stream.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-blue-500"></div>
+                  <span>Average monthly spending is <b>₹{Math.round(last3MonthsAvg).toLocaleString()}</b>, defining your lifestyle baseline.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-rose-500"></div>
+                  <span>Most volatile category is <b>{topCategory?.[0]}</b>, causing major expense fluctuations.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-purple-500"></div>
+                  <span>Savings rate is <b>{(income > 0 ? (balance / income) * 100 : 0).toFixed(1)}%</b>, reflecting strong discipline.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-yellow-500"></div>
+                  <span>Current month spending is <b>₹{currentMonthExp.toLocaleString()}</b>, showing trend changes.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-indigo-500"></div>
+                  <span>{avgDiff.toFixed(1)}% deviation from your 3-month average spending pattern.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-pink-500"></div>
+                  <span>Maintaining this savings rate will significantly improve long-term financial growth.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-cyan-500"></div>
+                  <span>Reducing spending in <b>{topCategory?.[0]}</b> can boost savings efficiency.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-orange-500"></div>
+                  <span>Expense spikes suggest irregular spending habits that can be optimized.</span>
+                </li>
+
+                <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-lime-500"></div>
+                  <span>Overall, your financial trajectory is positive with scope for further optimization.</span>
+                </li>
+
+              </ul>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
+      {activeTab === "recent activity" && (
+        <div className="glass-card p-8 animate-in fade-in duration-500">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">
+            Recent Activity
+          </h3>
+
+          <div className="space-y-4">
+            {transactions.slice(0, 10).map((t, i) => (
+              <div key={i} className="flex justify-between items-center border-b pb-3 border-gray-100 dark:border-gray-800">
+                <div>
+                  <p className="font-semibold text-gray-800 dark:text-white">{t.category}</p>
+                  <p className="text-xs text-gray-500">{t.date}</p>
+                </div>
+                <p className={`font-bold ${t.type === "income" ? "text-emerald-500" : "text-rose-500"}`}>
+                  {t.type === "income" ? "+" : "-"} ₹{t.amount}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === "notifications" && (
+        <div className="glass-card p-8 animate-in fade-in duration-500">
+          <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">
+            Notifications
+          </h3>
+
+          <div className="space-y-4 text-sm">
+
+            {expenses > income && (
+              <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600">
+                ⚠️ Your expenses are higher than your income.
+              </div>
+            )}
+
+            {balance > income * 0.3 && (
+              <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600">
+                💰 Great job! You're saving well this month.
+              </div>
+            )}
+
+            {filtered.length === 0 && (
+              <div className="p-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500">
+                📭 No transactions found for selected filters.
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* SETTINGS TAB */}
+      {activeTab === "settings" && (
+        <div className="glass-card p-10 max-w-2xl animate-in fade-in duration-500 text-gray-900 dark:text-white">
+          <h3 className="text-xl font-bold mb-6">User Configuration</h3>
+          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+            <div>
+              <p className="font-bold">System Role</p>
+              <p className="text-sm text-gray-500">Defines your access permissions</p>
+            </div>
+            <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs font-black uppercase rounded-full">
+              {role}
+            </span>
+          </div>
+        </div>
+      )}
+
+    </div>
     </div >
   )
 }
