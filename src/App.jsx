@@ -782,7 +782,7 @@ function App() {
                   : `🔥 Great job! Your expenses decreased by ${Math.abs(monthDiff).toFixed(1)}% this month. You're moving towards stronger financial discipline. Keep it up!`}
               </p>
             </div>
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-10 auto-rows-fr">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-7 auto-rows-fr">
 
               {/* GRAPHS */}
               <div className="glass-card p-6 xl:col-span-2 flex flex-col h-[300px] sm:h-[340px] md:h-[380px] xl:h-full">
@@ -792,7 +792,7 @@ function App() {
 
                 <ResponsiveContainer
                   width="100%"
-                  height={window.innerWidth < 640 ? 220 : 450}
+                  height={window.innerWidth < 640 ? 300 : 450}
                 >
                   <BarChart data={comparisonDataArr}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
