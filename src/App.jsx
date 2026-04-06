@@ -782,18 +782,15 @@ function App() {
                   : `🔥 Great job! Your expenses decreased by ${Math.abs(monthDiff).toFixed(1)}% this month. You're moving towards stronger financial discipline. Keep it up!`}
               </p>
             </div>
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-4 auto-rows-fr">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-10 auto-rows-fr">
 
               {/* GRAPHS */}
-              <div className="glass-card p-6 xl:col-span-2 flex flex-col justify-start h-auto sm:h-[340px] md:h-[380px] xl:h-full">
+              <div className="glass-card p-6 xl:col-span-2 flex flex-col h-full min-h-[350px]">
                 <h3 className="font-bold mb-6 text-slate-900 dark:text-white">
                   Strategic Expense Benchmark
                 </h3>
 
-                <ResponsiveContainer
-                  width="100%"
-                  height={window.innerWidth < 640 ? 260 : 450}
-                >
+                <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={comparisonDataArr}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
                     <XAxis dataKey="name" stroke="#888" fontSize={12} />
@@ -954,12 +951,3 @@ function App() {
 }
 
 export default App
-
-
-
-
-
-
-
-
-
