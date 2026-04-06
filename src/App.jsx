@@ -860,19 +860,21 @@ function App() {
                 Strategic Expense Benchmark
               </h3>
 
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={comparisonDataArr}>
+              <ResponsiveContainer width="100%" height={300} minHeight={200}>
+                <BarChart data={comparisonDataArr || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
                   <XAxis dataKey="name" stroke="#888" fontSize={12} />
                   <YAxis stroke="#888" fontSize={12} />
                   <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
                   <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={60}>
-                    {comparisonDataArr.map((entry, index) => (
-                      <Cell key={index} fill={
-                        index === comparisonDataArr.length - 1
-                          ? (monthDiff > 0 ? '#ef4444' : '#10b981')
-                          : '#3b82f6'
-                      }
+                    {comparisonDataArr?.map((entry, index) => (
+                      <Cell
+                        key={index}
+                        fill={
+                          index === comparisonDataArr.length - 1
+                            ? (monthDiff > 0 ? '#ef4444' : '#10b981')
+                            : '#3b82f6'
+                        }
                       />
                     ))}
                   </Bar>
@@ -1021,7 +1023,6 @@ function App() {
       )}
 
     </div>
-    </div >
   )
 }
 
