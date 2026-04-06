@@ -785,7 +785,7 @@ function App() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch mt-10 auto-rows-fr">
 
               {/* GRAPHS */}
-              <div className="glass-card p-6 xl:col-span-2 flex flex-col h-full min-h-[350px]">
+              <div className="glass-card p-6 xl:col-span-2 flex flex-col h-[220px] sm:h-[260px] md:h-[320px] xl:h-full">
                 <h3 className="font-bold mb-6 text-slate-900 dark:text-white">
                   Strategic Expense Benchmark
                 </h3>
