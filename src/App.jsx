@@ -873,6 +873,7 @@ function App() {
                           ? (monthDiff > 0 ? '#ef4444' : '#10b981')
                           : '#3b82f6'
                       }
+                      />
                     ))}
                   </Bar>
                 </BarChart>
