@@ -412,7 +412,7 @@ function App() {
           <select
             value={activeTab}
             onChange={(e) => setActiveTab(e.target.value)}
-            className="p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm"
+            className="p-2 rounded-lg bg-white dark:bg-gray-900 border dark:border-gray-700 text-sm text-gray-900 dark:text-white"
           >
             <option value="summary">Summary</option>
             <option value="transactions">Transactions</option>
