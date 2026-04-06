@@ -792,7 +792,7 @@ function App() {
 
                 <ResponsiveContainer
                   width="100%"
-                  height={window.innerWidth < 640 ? 220 : 450}
+                  height={window.innerWidth < 640 ? 260 : 450}
                 >
                   <BarChart data={comparisonDataArr}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#333" : "#eee"} />
